@@ -63,15 +63,15 @@ Notice the lambda expression in place of an anonymous class definition.
 
 DELTA includes several filters already programmed, so the following are all legal statements:
 
-   Image blurredImage = img.applyFilter( new SimpleBlurFilter( 9 ) );
+    Image blurredImage = img.applyFilter( new SimpleBlurFilter( 9 ) );
 
 ![Blurring the image](https://dl.dropboxusercontent.com/u/19633784/birds/blur.png)
 
-   Image motionBlurredImage = img.applyFilter( new MotionBlurFilter( Math.PI/4, 9 ) );
+    Image motionBlurredImage = img.applyFilter( new MotionBlurFilter( Math.PI/4, 9 ) );
 
 ![Adding motion blur](https://dl.dropboxusercontent.com/u/19633784/birds/motionblur.png)
 
-   Image edgeDetectImage = img.applyFilter( new SimpleEdgeDetectionFilter() );
+    Image edgeDetectImage = img.applyFilter( new SimpleEdgeDetectionFilter() );
 
 ![Edge detection](https://dl.dropboxusercontent.com/u/19633784/birds/edges.png)
 
