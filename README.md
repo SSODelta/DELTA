@@ -67,6 +67,10 @@ DELTA includes several filters already programmed, so the following are all lega
 
 ![Blurring the image](https://dl.dropboxusercontent.com/u/19633784/birds/blur.png)
 
+    Image medianImage = img.applyFilter( new MedianFilter( 11 ) );
+
+![Adding a median filter](https://dl.dropboxusercontent.com/u/19633784/birds/median.png)
+
     Image motionBlurredImage = img.applyFilter( new MotionBlurFilter( Math.PI/4, 9 ) );
 
 ![Adding motion blur](https://dl.dropboxusercontent.com/u/19633784/birds/motionblur.png)
