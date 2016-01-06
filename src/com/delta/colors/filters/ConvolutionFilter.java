@@ -4,7 +4,7 @@ import com.delta.colors.common.Color;
 
 /**
  * A ConvolutionFilter represents a filter, that uses a coefficient matrix to compute the new value of a given pixel based on the neighboring pixels.
- * @author nikol
+ * @author ssodelta
  *
  */
 public class ConvolutionFilter implements ImageFilter {

@@ -1,7 +1,6 @@
 package com.delta.colors.common;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -18,63 +17,6 @@ import com.delta.colors.obscure.*;
  *
  */
 public abstract class Color implements Serializable {
-	
-	/**
-	 * Returns a comparator that compares Colors according to their Value as represented in HSV.
-	 * @return
-	 */
-	public static Comparator<Color> comparatorValue(){
-		return new Comparator<Color>(){
-
-			@Override
-			public int compare(Color arg0, Color arg1) {
-				return (int)Math.signum(arg0.toHSV().get('v') - arg1.toHSV().get('v'));
-			}
-			
-		};
-	}
-	
-	/**
-	 * Returns a comparator that compares Colors according to their Saturation as represented in HSV.
-	 * @return
-	 */
-	public static Comparator<Color> comparatorSaturation(){
-		return new Comparator<Color>(){
-
-			@Override
-			public int compare(Color arg0, Color arg1) {
-				return (int)Math.signum(arg0.toHSV().get('s') - arg1.toHSV().get('s'));
-			}
-			
-		};
-	}
-	
-	/**
-	 * Returns a comparator that compares Colors lexicographically in the RGB color space.
-	 * @return
-	 */
-	public static Comparator<Color> comparatorLexicographicRGB(){
-		return new Comparator<Color>(){
-
-			@Override
-			public int compare(Color arg0, Color arg1) {
-				RGB rgb1 = arg0.toRGB(),
-				    rgb2 = arg1.toRGB();
-				
-				if(rgb1.get('r') > rgb2.get('r')) return 1;  else
-				if(rgb1.get('r') < rgb2.get('r')) return -1; else
-					
-				if(rgb1.get('g') > rgb2.get('g')) return 1;  else
-				if(rgb1.get('g') < rgb2.get('g')) return -1; else
-					
-				if(rgb1.get('b') > rgb2.get('b')) return 1;  else
-				if(rgb1.get('b') < rgb2.get('b')) return -1;
-				
-				return 0;
-			}
-			
-		};
-	}
 	
 	/**
 	 * Utility class for Color objects.
@@ -190,7 +132,7 @@ public abstract class Color implements Serializable {
 	 * To make sure you get sensible values from this function be sure to convert Color objects to a known color space first.
 	 * @return The data associated with this Color object.
 	 */
-	protected double[] getData(){
+	public double[] getData(){
 		double[] r = new double[data.length];
 		for(int i=0; i<r.length; i++)
 			r[i] = data[i];
@@ -203,6 +145,14 @@ public abstract class Color implements Serializable {
 	 */
 	public String getName(){
 		return name;
+	}
+	
+	/**
+	 * Returns the length of the vector representing the values of the color channels in this Color object.
+	 * @return The number of dimensions
+	 */
+	public int getDimensions(){
+		return data.length;
 	}
 	
 	/**
