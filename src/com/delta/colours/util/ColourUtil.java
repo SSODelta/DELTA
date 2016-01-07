@@ -4,6 +4,10 @@ public final class ColourUtil {
 		
 	public static final double ALMOST_ZERO = 0.00001;
 	
+	public static final double rand(){
+		return Math.random()*2+1;
+	}
+	
 	/**
 	 * Checks if a given double is close to being zero.
 	 * @param d

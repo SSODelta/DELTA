@@ -239,4 +239,8 @@ public final class RGB extends Colour {
 		return new YUV(y*255.0, u*255.0, v*255.0);
 	}
 
+	@Override
+	public GreyScale toGreyScale() {
+		return new GreyScale(toHSV().get('v'));
+	}
 }

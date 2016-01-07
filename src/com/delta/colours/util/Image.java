@@ -56,13 +56,14 @@ public final class Image {
 			for(int x=0; x<w; x++)
 				data[x][y] = new RGB(img.getRGB(x, y));
 				
+		alpha = 1.0;
 	}
 	
 	public Image setAlpha(double alpha){
 		return new Image(alpha, data);
 	}
 	
-	public double getAlpha(){
+	public final double getAlpha(){
 		return alpha;
 	}
 
@@ -81,8 +82,9 @@ public final class Image {
 		Colour[][] newData = new Colour[w][h];
 		
 		for(int x=0; x<w; x++)
-		for(int y=0; y<h; y++)
-			newData[x][y] = map.apply(data[x][y], img.data[x][y]);
+		for(int y=0; y<h; y++){
+			newData[x][y] = map.apply(this.data[x][y], img.data[x][y]);
+		}
 		
 		return new Image(newData);
 	}

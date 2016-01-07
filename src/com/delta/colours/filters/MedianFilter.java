@@ -62,6 +62,8 @@ public class MedianFilter implements ImageFilter {
 			
 			int s = channels[i].size();
 			
+			if(s==0)continue;
+			
 			if(s%2 == 0)
 				finalColor[i] = (channels[i].get(s/2-1) + channels[i].get(s/2))/2;
 			else

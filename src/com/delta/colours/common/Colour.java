@@ -19,7 +19,7 @@ import com.delta.colours.util.ColourUtil;
  */
 public abstract class Colour implements Serializable {
 	
-	public static BlendMode BLEND_MODE;
+	public static BlendMode BLEND_MODE = BlendMode.MULTIPLY;
 	
 	/**
 	 * Blends another Colour with this Colour object. It is assumed that 'this' is the target, and that 'o' is the blend.
@@ -51,16 +51,19 @@ public abstract class Colour implements Serializable {
 	private static final Colour blendColours(BlendMode mode, Colour target, Colour blend){
 		
 		Colour a = target,
-			  b = blend.convert(a.getClass());	//Make sure the Colours are the same class
+			   b = blend.convert(a.getClass());	//Make sure the Colours are the same class
 		
 		int n = a.getDimensions();
+		
 		
 		double[] c = new double[n];
 		
 		for(int i=0; i<n; i++)
 			c[i] = mode.combine(a.data[i], b.data[i]);
+
+		Colour res = Colour.fromClass(target.getClass(), c);
 		
-		return Colour.fromClass(target.getClass(), c);
+		return res;
 	}
 	
 	private static final long serialVersionUID = -4625956113710955788L;
@@ -375,6 +378,13 @@ public abstract class Colour implements Serializable {
 		return Colour.fromClass(this.getClass(), newData);
 	}
 	
+	public final Colour set(char c, double val){
+		double[] newData = new double[data.length];
+		for(int i=0; i<data.length; i++)
+			newData[i] = labelIndices.get(c)==i ? val : data[i];
+		return Colour.fromClass(this.getClass(), newData);
+	}
+	
 	/**
 	 * Converts this Colour to the same class as 'c'.
 	 * @param c A Colour class representing the desired output Colour subtype.
@@ -399,11 +409,19 @@ public abstract class Colour implements Serializable {
 			return toYUV();
 		} else if(c == LMS.class){
 			return toLMS();
+		} else if(c == GreyScale.class){
+			return toGreyScale();
 		}
 		
 		return null;
 	}
 
+	/**
+	 * Converts this object to grey-scale.
+	 * @return
+	 */
+	public abstract GreyScale toGreyScale();
+	
 	/**
 	 * Converts this object to the RGB Colour space.
 	 * @return

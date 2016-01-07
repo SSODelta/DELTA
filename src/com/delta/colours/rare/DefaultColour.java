@@ -18,6 +18,11 @@ public abstract class DefaultColour extends Colour {
 	}
 
 	@Override
+	public GreyScale toGreyScale() {
+		return toRGB().toGreyScale();
+	}
+
+	@Override
 	public HSV toHSV() {
 		// TODO Auto-generated method stub
 		return toRGB().toHSV();

@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -26,7 +27,7 @@ public class Animation {
 	private int delay;
 	
 	private Animation(){
-		images = new ArrayList<Image>();
+		images = new LinkedList<Image>();
 	}
 	
 	public Animation(int delay){
@@ -44,8 +45,9 @@ public class Animation {
 		this.images = images;
 	}
 	
-	public Animation(File file){
+	public Animation(int delay, File file){
 		this();
+		this.delay = delay;
 		List<BufferedImage> gif;
 		try {
 			gif = loadGIF(file);
@@ -85,9 +87,9 @@ public class Animation {
 		System.out.println("PROCESSING");
 		for(int i=0; i<frames; i++){
 
-			System.out.println("Processing "+(i+1)+"/"+frames);
 			double t = t_start + i*dt;
-			
+
+			System.out.println("Processing "+(i+1)+"/"+frames+" (t="+t+")");			
 			newImages.add( f.apply(images.get(i%images.size()), t));
 			
 		}
