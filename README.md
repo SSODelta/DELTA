@@ -2,7 +2,7 @@
 
 ## Colors
 DELTA adds extensive support for colors, making it trivial to convert between various color spaces. 
-Any color in DELTA is an instance of a *color space*. All color spaces are subclass of com.delta.colors.Colour, which itself is an abstract class aggregating a vector representing the values of the color channels in the color space extending Colour. So RGB is a subclass of Colour, which implements the Red-Green-Blue color space. RGB is not abstract so we can invoke its constructor to create a new Colour object.
+Any color in DELTA is an instance of a *color space*. All color spaces are subclass of com.delta.colors.Colour. The Colour class is an abstract class containing a vector representing the values of the color channels in the color space extending Colour. So RGB is a subclass of Colour, which implements the Red-Green-Blue color space. RGB is not abstract so we can invoke its constructor to create a new Colour object.
 
     Colour red = new RGB(255, 0, 0);
 
