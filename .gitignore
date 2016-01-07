@@ -49,3 +49,6 @@ Temporary Items
 # Various image files used for testing purposes
 *.jpg
 *.png
+
+# Java class files (not needed)
+*.class
