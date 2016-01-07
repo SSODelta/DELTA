@@ -36,7 +36,14 @@ But why would we ever do this? You see, the advantage of using a DELTA Image bec
 
 ### Blending images
 
-DELTA supports blending images using all the regular blend modes from Photoshop and other image editing software.
+DELTA supports blending images using all the regular blend modes from Photoshop and other image editing software. This means that any two images can be blended together by supplying a BlendMode-object.
+
+    Image img1 = . . ., img2 = . . .;
+    Image blend = img1.blend(img2, BlendMode.OVERLAY);
+
+In this case, img1 is the 'target' and img2 is the 'blend' [as described by Rolegio B. Andreo](http://www.deepskycolors.com/archivo/2010/04/21/formulas-for-Photoshop-blending-modes.html). 
+
+You can also change the alpha channel of an Image object, which changes how dominant the colors from a given image are. This is also exactly analogous with Photoshop or other editing software.
 
 ### Filters
 Suppose we want to apply a filter to
@@ -58,16 +65,7 @@ Suppose we have some Image:
 ![A regular image of some birds](https://dl.dropboxusercontent.com/u/19633784/birds/bird.jpg)
 
 The Image class has a method .applyFilter(ImageFilter f); that applies some ImageFilter to a given image and returns the result.
-This is a very powerful feature. Suppose we want to shift the hue of some Image:
-
-    Image img = . . .
-    Image blurredImage = img.applyFilter( (x,y,raster) -> raster[x][y].toHSV().add( Math.max(x, y), 0, 0) );
-
-![Shifting the hue by max(x,y)](https://dl.dropboxusercontent.com/u/19633784/birds/output.png)
-
-Notice the lambda expression in place of an anonymous class definition.
-
-DELTA includes several filters already programmed, so the following are all legal statements:
+This is a very powerful feature. DELTA includes several filters already programmed, so we can do:
 
     Image blurredImage = img.applyFilter( new SimpleBlurFilter( 9 ) );
 
@@ -85,7 +83,16 @@ DELTA includes several filters already programmed, so the following are all lega
 
 ![Edge detection](https://dl.dropboxusercontent.com/u/19633784/birds/edges.png)
 
-Or, we could combine several of these:
+We are not limited to the already-implemented filters - it is also possibly to anonymously implement the ImageFilter-interface as shown; suppose we want to shift the hue of some Image:
+
+    Image img = . . .;
+    Image blurredImage = img.applyFilter( (x,y,raster) -> raster[x][y].toHSV().add( Math.max(x, y), 0, 0) );
+
+![Shifting the hue by max(x,y)](https://dl.dropboxusercontent.com/u/19633784/birds/output.png)
+
+Here we use a Lambda expression (introduced in Java 8.0) to anonymously define an instance of ImageFilter, which adds max(x, y) to the hue of the image.
+
+Or, we could combine several of these filters:
 
     Image comboImage = 
     img.blend(
@@ -96,3 +103,29 @@ Or, we could combine several of these:
 ![A combination image](https://dl.dropboxusercontent.com/u/19633784/birds/combo.png)
 
 All credit for the implementations of these filters goes to Lode Vandevenne (http://lodev.org/cgtutor/filtering.html).
+
+### Animations
+
+DELTA also has built-in support for producing animations from a list of images. Say we want to animate our bird image from earlier. We can then construct a new Animation object:
+
+    Image bird = . . .;
+    Animation birdAnimation = new Animation(FRAME_LENGTH, bird);
+
+The Animation constructor also requires the length (in milliseconds) of each frame in the output animation. Now, to do something with each frame in this animation, we need to process it. This is done using the .processAnimation()-command which returns a new Animation object where each frame is (possibly) changed. It requires two arguments: 1) the number of frames in the animation and 2) A TimeFunction object.
+
+A TimeFunction object is just an interface:
+
+    public interface TimeFunction{
+        Image apply(Image img, double t);
+    }
+
+which describes what to do with some Image at some point in time 't'. Just like the ImageFilter it often makes sense to implement this interface anonymously (lambda expressions are recommended). An example could be:
+
+    Animation colorfulBirds = birdAnimation.processAnimation(40, (img, t) -> 
+        i.applyFilter(
+            (x,y,raster) -> raster[x][y].toHSV().add(t + (x+y)/200.0,
+                                                     0,
+                                                     0)
+        ));
+
+![Woah!](https://dl.dropboxusercontent.com/u/19633784/birds/trippy%20fugl.gif)
