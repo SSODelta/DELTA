@@ -22,7 +22,7 @@ And it's also trivial to construct a DELTA Color from a java.awt.Color.
 
     Color red2 = Color.fromAWTColor(awtRed);
 
-### Images
+## Images
 The natural extension of a Color class is an Image-class, so of course this library contains an Image-class. 
 Suppose we have loaded some image from the hard disk (possibly using ImageIO) as a BufferedImage, then we can create a DELTA Image:
 
@@ -45,7 +45,7 @@ In this case, img1 is the 'target' and img2 is the 'blend' [as described by Role
 
 You can also change the alpha channel of an Image object, which changes how dominant the colors from a given image are. This is also exactly analogous with Photoshop or other editing software.
 
-### Filters
+### Image filters
 Suppose we want to apply a filter to
 an image that shifts the hue of each pixel by some amount. Using a regular BufferedImage we first have to construct a loop that enumerates
 all pixels in the image, then convert the pixels to the HSV (or HSL) color space, add some value to the hue and convert it back to RGB before
@@ -104,7 +104,7 @@ Or, we could combine several of these filters:
 
 All credit for the implementations of these filters goes to Lode Vandevenne (http://lodev.org/cgtutor/filtering.html).
 
-### Animations
+## Animations
 
 DELTA also has built-in support for producing animations from a list of images. Say we want to animate our bird image from earlier. We can then construct a new Animation object:
 
@@ -129,3 +129,34 @@ which describes what to do with some Image at some point in time 't'. Just like 
         ));
 
 ![Woah!](https://dl.dropboxusercontent.com/u/19633784/birds/trippy%20fugl.gif)
+
+### Exporting Animations
+
+Being able to construct an Animation-object is no fun if we can't export its contents to the operating system. Fortunately, DELTA makes this very easy. Once you're satisfied with the contents of an animation object, you can invoke .export(File f); to save it in the GIF format:
+
+    colorfulBirds.export(new File("colorfulBirds.gif"));
+
+The method may throw an IOException if something goes wrong saving the file to the disk.
+
+A drawback with GIF-animations is the data-loss as seen when comparing the quality of the animation to the still images. Fortunately, this can also be mitigated, BUT then you have to assemble the images yourself. If you instead invoke .export(String s); the Animation object will produce a separate image file for every Image object it contains, which can then later be assembled using time lapse software (such as ffmpeg). The Animation ensures padding the output files, so the lengths of their path names are identical (it prefixes the frame number with 0's).
+
+### Importing Animations
+
+DELTA also support constructing Animation objects from existing animations. The constructor
+
+    public Animator(File f)
+
+Will attempt to load a GIF file located at 'f' and read its frames into memory as an array Image objects. Invoking .processAnimation() works just the same as constructing an Animator from a single Image - the method simply "wraps around" back to frame 0 should it run out of new frames. In this sense, an Animator constructed from a single Image is a special case of loading an array of Images (where it wraps around *every* time).
+
+Similarily, it's also possible to construct an Animator from a list of images:
+
+    public Animator(List<Image> imageList)
+
+### Combining Animations
+
+Suppose you have two different Animations and want to append one of them to other. Using DELTA this is also remarkably easy:
+
+    Animation a1 = . . ., a2 = . . .;
+    Animation combined = a1.append(a2);
+
+Which will append the frames of 'a2' *after* the frames in 'a1' and return the result as a new Animation.
