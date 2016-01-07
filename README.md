@@ -32,8 +32,14 @@ Converting back to a BufferedImage is also trivial:
 
     BufferedImage bufferedImage2 = img.getBufferedImage();
 
+But why would we ever do this? You see, the advantage of using a DELTA Image becomes clear when we want to manipulate our images some way...
+
+### Blending images
+
+DELTA supports blending images using all the regular blend modes from Photoshop and other image editing software.
+
 ### Filters
-The advantage of using a DELTA Image becomes clear when we want to manipulate our images some way. Suppose we want to apply a filter to
+Suppose we want to apply a filter to
 an image that shifts the hue of each pixel by some amount. Using a regular BufferedImage we first have to construct a loop that enumerates
 all pixels in the image, then convert the pixels to the HSV (or HSL) color space, add some value to the hue and convert it back to RGB before
 finally updating the pixel in the BufferedImage.
@@ -82,7 +88,7 @@ DELTA includes several filters already programmed, so the following are all lega
 Or, we could combine several of these:
 
     Image comboImage 
-    = img.applyFilter(new MotionBlurFilter(Math.PI/4,9)).applyFilter(new MedianFilter(11)).xor(img).invertLightness();
+    img.blend(img.applyFilter(new MotionBlurFilter(Math.PI/4,9)).applyFilter(new MedianFilter(11)).xor(img), BlendMode.SCREEN);
 
 ![A combination image](https://dl.dropboxusercontent.com/u/19633784/birds/combo.png)
 All credit for the implementations of these filters goes to Lode Vandevenne (http://lodev.org/cgtutor/filtering.html).
