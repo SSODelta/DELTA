@@ -52,7 +52,7 @@ public final class Image {
 				
 	}
 	
-	public Image processImage(Function<Colour, Colour> map){
+	public final Image processImage(Function<Colour, Colour> map){
 		Colour[][] newData = new Colour[w][h];
 		
 		for(int x=0; x<w; x++)
@@ -62,7 +62,7 @@ public final class Image {
 		return new Image(newData);
 	}
 
-	public Image processImage(Image img, Function2 map){
+	public final Image processImage(Image img, Function2 map){
 		Colour[][] newData = new Colour[w][h];
 		
 		for(int x=0; x<w; x++)
@@ -72,11 +72,11 @@ public final class Image {
 		return new Image(newData);
 	}
 	
-	public Image blend(Image img, BlendMode mode){
+	public final Image blend(Image img, BlendMode mode){
 		return processImage(img, (c1,c2) -> c1.blend(c2, mode));
 	}
 	
-	public Image blend(Image img){
+	public final Image blend(Image img){
 		return processImage(img, (c1,c2) -> c1.blend(c2));
 	}
 	
@@ -85,7 +85,7 @@ public final class Image {
 	 * @param filter The ImageFilter to apply.
 	 * @return A new image representing this image as seen through the filter 'filter'.
 	 */
-	public Image applyFilter(ImageFilter filter){
+	public final Image applyFilter(ImageFilter filter){
 		Colour[][] newData = new Colour[w][h];
 
 		for(int y=0; y<h; y++)
@@ -99,7 +99,7 @@ public final class Image {
 	 * Converts this Image object to a BufferedImage.
 	 * @return A BufferedImage representing this Image.
 	 */
-	public BufferedImage getBufferedImage(){
+	public final BufferedImage getBufferedImage(){
 		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		
 		for(int y=0; y<h; y++)
@@ -107,6 +107,11 @@ public final class Image {
 			img.setRGB(x, y, data[x][y].toInteger());
 		
 		return img;
+	}
+	
+	public final static BufferedImage applyFilter(ImageFilter filter, BufferedImage bufferedImage){
+		Image img = new Image(bufferedImage);
+		return img.applyFilter(filter).getBufferedImage();
 	}
 
 }

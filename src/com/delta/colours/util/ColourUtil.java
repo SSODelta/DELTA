@@ -1,6 +1,6 @@
 package com.delta.colours.util;
 
-public class ColourUtil {
+public final class ColourUtil {
 		
 	public static final double ALMOST_ZERO = 0.00001;
 	
@@ -9,7 +9,7 @@ public class ColourUtil {
 	 * @param d
 	 * @return
 	 */
-	public static boolean almostZero(double d){
+	public static final boolean almostZero(double d){
 		return Math.abs(d) <= ALMOST_ZERO;
 	}
 	
@@ -20,7 +20,7 @@ public class ColourUtil {
 	 * @param max The maximum accepted value of 'x'. 
 	 * @return
 	 */
-	public static double bound(double x, double min, double max){
+	public static final double bound(double x, double min, double max){
 		if(x<min)return min;
 		if(x>max)return max;
 		return x;
@@ -31,7 +31,7 @@ public class ColourUtil {
 	 * @param vals
 	 * @return
 	 */
-	public static double min(double... vals){
+	public static final double min(double... vals){
 		double min = Double.MAX_VALUE;
 		
 		for(double v : vals)
@@ -46,7 +46,7 @@ public class ColourUtil {
 	 * @param vals
 	 * @return
 	 */
-	public static double max(double... vals){
+	public static final double max(double... vals){
 		double max = Double.MIN_VALUE;
 		
 		for(double v : vals)
@@ -61,7 +61,7 @@ public class ColourUtil {
 	 * @param deg An angle in degrees.
 	 * @return 
 	 */
-	public static double cos(double deg){
+	public static final double cos(double deg){
 		return Math.cos(Math.toRadians(deg));
 	}
 	
@@ -70,7 +70,7 @@ public class ColourUtil {
 	 * @param deg cos(x)
 	 * @return The angle represented by arccos(cos(x)) in degrees.
 	 */
-	public static double acos(double deg){
+	public static final double acos(double deg){
 		return Math.toDegrees(Math.acos(deg));
 	}
 

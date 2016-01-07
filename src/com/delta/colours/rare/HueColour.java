@@ -31,7 +31,14 @@ public abstract class HueColour extends DefaultColour {
 		return newVals;
 	}
 	
+	@Override
+	public double get(char c){
+		if(c=='h' || c=='H')
+			throw new IllegalArgumentException("Cannot invoke method .get('h') on subtypes of HueColour - use .getHue() instead.");
+		return super.get(c);
+	}
+	
 	public double getHue(){
-		return get('h')*360;
+		return super.get('h')*360;
 	}
 }

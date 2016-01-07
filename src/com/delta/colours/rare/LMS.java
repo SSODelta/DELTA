@@ -19,8 +19,8 @@ public final class LMS extends DefaultColour {
 		this(new double[]{l,m,s});
 	}
 	
-	//@Override
-	public LMS toProtanopeColor(){
+	@Override
+	public LMS toProtanopeColour(){
 		double //l = get('l'),
 			   m = get('m'),
 			   s = get('s');

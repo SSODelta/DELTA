@@ -31,7 +31,7 @@ public abstract class Colour implements Serializable {
 	 * @param o The blend
 	 * @return The blended Colour, has same class as 'this'.
 	 */
-	public Colour blend(Colour o){
+	public final Colour blend(Colour o){
 		return blend(o, BLEND_MODE);
 	}
 	
@@ -44,11 +44,11 @@ public abstract class Colour implements Serializable {
 	 * @param o The blend
 	 * @return The blended Colour, has same class as 'this'.
 	 */
-	public Colour blend(Colour o, BlendMode mode){
+	public final Colour blend(Colour o, BlendMode mode){
 		return blendColours(mode, this, o);
 	}
 	
-	private static Colour blendColours(BlendMode mode, Colour target, Colour blend){
+	private static final Colour blendColours(BlendMode mode, Colour target, Colour blend){
 		
 		Colour a = target,
 			  b = blend.convert(a.getClass());	//Make sure the Colours are the same class
@@ -97,33 +97,18 @@ public abstract class Colour implements Serializable {
 	 * To make sure you get sensible values from this function be sure to convert Colour objects to a known Colour space first.
 	 * @return The data associated with this Colour object.
 	 */
-	public double[] getData(){
+	public final double[] getData(){
 		double[] r = new double[data.length];
 		for(int i=0; i<r.length; i++)
 			r[i] = data[i];
 		return r;
 	}
 	
-	public RGB xor(Colour c){
-		int[] r1 = this.toRGB().getRGB(),
-			  r2 = c.toRGB().getRGB();
-		
-		return new RGB( r1[0] ^ r2[0],
-						r1[1] ^ r2[1],
-						r1[2] ^ r2[2]);
-	}
-	
-	public HSL invertLightness(){
-		HSL hsl = this.toHSL();
-		
-		return new HSL(hsl.get('h'), hsl.get('s'), 1.0-hsl.get('l'));
-	}
-	
 	/**
 	 * Returns the name of the Colour space this Colour-object represents.
 	 * @return
 	 */
-	public String getName(){
+	public final String getName(){
 		return name;
 	}
 	
@@ -131,7 +116,7 @@ public abstract class Colour implements Serializable {
 	 * Returns the length of the vector representing the values of the Colour channels in this Colour object.
 	 * @return The number of dimensions
 	 */
-	public int getDimensions(){
+	public final int getDimensions(){
 		return data.length;
 	}
 	
@@ -140,7 +125,7 @@ public abstract class Colour implements Serializable {
 	 * @param i Index i
 	 * @return
 	 */
-	protected double get(int i){
+	private final double get(int i){
 		return data[i];
 	}
 	
@@ -150,11 +135,11 @@ public abstract class Colour implements Serializable {
 	 * 
 	 * Colour rgb = new RGB(0.5,0,0);
 	 * 
-	 * Then rgb.get('r') would return 0.5. This method throws an IllegalArgumentException is an invalid Colour channel is given.
+	 * Then rgb.get('r') would return 0.5. This method throws an IllegalArgumentException if an invalid Colour channel is given.
 	 * @param c A Colour channel
 	 * @return The value at 'c'.
 	 */
-	protected double get(char c){
+	public double get(char c){
 		char lowerCase = (""+c).toLowerCase().charAt(0);
 		
 		if(!labelIndices.containsKey(lowerCase))
@@ -168,7 +153,7 @@ public abstract class Colour implements Serializable {
 	 * @param c An AWT Colour object.
 	 * @return A DELTA Colour object.
 	 */
-	public static RGB fromAWTColour(java.awt.Color c){
+	public final static RGB fromAWTColour(java.awt.Color c){
 		return new RGB(c.getRed(), c.getGreen(), c.getBlue());
 	}
 	
@@ -176,7 +161,7 @@ public abstract class Colour implements Serializable {
 	 * Construct a java.awt.Color-object from this Colour-object.
 	 * @return An AWT Colour object.
 	 */
-	public java.awt.Color toAWTColour(){
+	public final java.awt.Color toAWTColour(){
 		RGB rgb = this.toRGB();
 		
 		return new java.awt.Color((float)ColourUtil.bound(rgb.get('r'),0,1), (float)ColourUtil.bound(rgb.get('g'),0,1), (float)ColourUtil.bound(rgb.get('b'),0,1));
@@ -194,7 +179,7 @@ public abstract class Colour implements Serializable {
 	 * Returns a 24-bit integer representing this Colour object.
 	 * @return 0xRRGGBB
 	 */
-	public int toInteger(){
+	public final int toInteger(){
 		return toAWTColour().getRGB();
 	}
 	
@@ -208,7 +193,7 @@ public abstract class Colour implements Serializable {
 	 * Gets an integer array representing this Colour object as 8-bit RGB Colours.
 	 * @return 
 	 */
-	public int[] getRGB(){
+	public final int[] getRGB(){
 		RGB rgb = toRGB();
 		
 		int r = (int)Math.round(255*rgb.get('r')),
@@ -256,12 +241,21 @@ public abstract class Colour implements Serializable {
 	}
 	
 	/**
+	 * Inverts the Lightness channel. First, this object is converted to the HSL color space, and then a 
+	 * @return
+	 */
+	public final Colour invertLightness(){
+		HSL hsl = toHSL();
+		return new HSL(hsl.getHue(), hsl.get('s'), 1-hsl.get('l'));
+	}
+	
+	/**
 	 * Adds this Colour object A to another Colour object B and returns the sum of A and B.
 	 * The type of A+B is the same as A.
 	 * @param c Some Colour
 	 * @return The sum of A and B, the type being the same as the type of this.
 	 */
-	public Colour add(Colour c){
+	public final Colour add(Colour c){
 		Colour other = c.convert(this.getClass());
 		
 		double[] addData = new double[data.length];
@@ -278,7 +272,7 @@ public abstract class Colour implements Serializable {
 	 * @param c Some Colour
 	 * @return The difference between A and B, the type being the same as the type of this.
 	 */
-	public Colour sub(Colour c){
+	public final Colour sub(Colour c){
 		Colour other = c.convert(this.getClass());
 		
 		double[] addData = new double[data.length];
@@ -295,7 +289,7 @@ public abstract class Colour implements Serializable {
 	 * @param amount The scalar
 	 * @return
 	 */
-	public Colour scale(double amount){
+	public final Colour scale(double amount){
 		double[] scaleData = new double[data.length];
 		
 		for(int i=0; i<data.length; i++)
@@ -310,7 +304,7 @@ public abstract class Colour implements Serializable {
 	 * @param data A vector of the data.
 	 * @return
 	 */
-	public static Colour fromClass(Class<? extends Colour> c, double[] data){
+	public final static Colour fromClass(Class<? extends Colour> c, double[] data){
 		Colour Colour = null;
 		
 		if(c == RGB.class)
@@ -350,7 +344,7 @@ public abstract class Colour implements Serializable {
 	 * @param vals A vector
 	 * @return The sum of this Colour object and the vector 'vals'.
 	 */
-	public Colour add(double... vals){
+	public final Colour add(double... vals){
 		if(vals.length != data.length)
 			throw new IllegalArgumentException("Length of vals must be equal to length of data ("+vals.length+" vs. "+data.length+")");
 		
@@ -369,7 +363,7 @@ public abstract class Colour implements Serializable {
 	 * @param vals A vector
 	 * @return The sum of this Colour object and the vector 'vals'.
 	 */
-	public Colour sub(double... vals){
+	public final Colour sub(double... vals){
 		if(vals.length != data.length)
 			throw new IllegalArgumentException("Length of vals must be equal to length of data ("+vals.length+" vs. "+data.length+")");
 		
@@ -386,7 +380,7 @@ public abstract class Colour implements Serializable {
 	 * @param c A Colour class representing the desired output Colour subtype.
 	 * @return This Colour, in the Colour space 'c'.
 	 */
-	public Colour convert(Class<? extends Colour> c){
+	public final Colour convert(Class<? extends Colour> c){
 		if(c == RGB.class){
 			return toRGB();
 		} else if(c == HSV.class){
@@ -414,7 +408,7 @@ public abstract class Colour implements Serializable {
 	 * Converts this object to the RGB Colour space.
 	 * @return
 	 */
-	public abstract RGB  toRGB();
+	public abstract RGB toRGB();
 	
 	/**
 	 * Converts this object to the HSV Colour space.
