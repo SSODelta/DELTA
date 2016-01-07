@@ -17,6 +17,7 @@ public final class Image {
 
 	private final Colour[][] data;
 	private int w, h;
+	private double alpha;
 	
 	/**
 	 * Creates an empty Image
@@ -29,10 +30,15 @@ public final class Image {
 	 * Creates an Image object based on a 2D-array of Colours.
 	 * @param data The data to use in this Image.
 	 */
-	public Image(Colour[][] data){
+	public Image(double alpha, Colour[][] data){
 		this.h = data[0].length;
 		this.w = data.length;
 		this.data = data;
+		this.alpha = alpha;
+	}
+	
+	public Image(Colour[][] data){
+		this(1.0, data);
 	}
 	
 	/**
@@ -52,6 +58,15 @@ public final class Image {
 				
 	}
 	
+	public Image setAlpha(double alpha){
+		return new Image(alpha, data);
+	}
+	
+	public double getAlpha(){
+		return alpha;
+	}
+
+	
 	public final Image processImage(Function<Colour, Colour> map){
 		Colour[][] newData = new Colour[w][h];
 		
@@ -62,7 +77,7 @@ public final class Image {
 		return new Image(newData);
 	}
 
-	public final Image processImage(Image img, Function2 map){
+	public final Image processImage(Image img, FunctionColours map){
 		Colour[][] newData = new Colour[w][h];
 		
 		for(int x=0; x<w; x++)
@@ -73,11 +88,14 @@ public final class Image {
 	}
 	
 	public final Image blend(Image img, BlendMode mode){
-		return processImage(img, (c1,c2) -> c1.blend(c2, mode));
+		double newAlpha = this.getAlpha() + img.getAlpha() - this.getAlpha()*img.getAlpha();
+		return processImage(img, (c1,c2) -> c1.scale(this.getAlpha())
+											  .blend( c2.convert(c1.getClass()).scale(img.getAlpha()), mode)
+				 							  .scale(1.0 / newAlpha));
 	}
 	
 	public final Image blend(Image img){
-		return processImage(img, (c1,c2) -> c1.blend(c2));
+		return blend(img, Colour.BLEND_MODE);
 	}
 	
 	/**

@@ -18,4 +18,5 @@ public interface ImageFilter {
 	 */
 	public Colour filter(int x, int y, Colour[][] raster);
 	
+	public static final ImageFilter IDENTITY = (x,y,raster) -> raster[x][y];
 }
