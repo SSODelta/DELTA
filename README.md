@@ -79,10 +79,6 @@ This is a very powerful feature. DELTA includes several filters already programm
 
 ![Adding motion blur](https://dl.dropboxusercontent.com/u/19633784/birds/motionblur.png)
 
-    Image edgeDetectImage = img.applyFilter( new SimpleEdgeDetectionFilter() );
-
-![Edge detection](https://dl.dropboxusercontent.com/u/19633784/birds/edges.png)
-
 We are not limited to the already-implemented filters - it is also possibly to anonymously implement the ImageFilter-interface as shown; suppose we want to shift the hue of some Image:
 
     Image img = . . .;
@@ -140,7 +136,7 @@ The method may throw an IOException if something goes wrong saving the file to t
 
 A drawback with GIF-animations is the data-loss as seen when comparing the quality of the animation to the still images. Fortunately, this can also be mitigated, BUT then you have to assemble the images yourself. If you instead invoke .export(String s); the Animation object will produce a separate image file for every Image object it contains, which can then later be assembled using time lapse software (such as ffmpeg). The Animation ensures padding the output files, so the lengths of their path names are identical (it prefixes the frame number with 0's).
 
-![Now in WEBM](https://dl.dropboxusercontent.com/u/19633784/birds/OUTPUT.webm)
+[Link to .WEBM](https://dl.dropboxusercontent.com/u/19633784/birds/OUTPUT.webm)
 
 ### Importing Animations
 
