@@ -2,9 +2,9 @@
 
 ## Colors
 DELTA adds extensive support for colors, making it trivial to convert between various color spaces. 
-Any color in DELTA is a subclass of com.delta.colors.Color, which itself is an abstract class. We can define a bright red color as:
+Any color in DELTA is an instance of a *color space*. All color spaces are subclass of com.delta.colors.Colour. The Colour class is an abstract class containing a vector representing the values of the color channels in the color space extending Colour. So RGB is a subclass of Colour, which implements the Red-Green-Blue color space. RGB is not abstract so we can invoke its constructor to create a new Colour object.
 
-    Color red = new RGB(255, 0, 0);
+    Colour red = new RGB(255, 0, 0);
 
 And then convert this to various color spaces:
 
@@ -13,17 +13,17 @@ And then convert this to various color spaces:
     red.toLMS().toString();  //LMS:  [17.8824, 3.4557, 0.02996]
     red.toYIQ().toString();  //YIQ:  [0.299, 0.596, 0.211]
 
-To preserve compatibility with existing Java-methods, the DELTA Color-library makes it easy to convert to java.awt.Color.
+To preserve compatibility with existing Java-methods, the DELTA Colour-library makes it easy to convert to java.awt.Color.
 So we can for instance do:
 
     java.awt.Color awtRed = red.toAWTColor();
 
-And it's also trivial to construct a DELTA Color from a java.awt.Color.
+And it's also trivial to construct a DELTA Colour from a java.awt.Color.
 
-    Color red2 = Color.fromAWTColor(awtRed);
+    Colour red2 = Color.fromAWTColor(awtRed);
 
-### Images
-The natural extension of a Color class is an Image-class, so of course this library contains an Image-class. 
+## Images
+The natural extension of a Color class is an Image-class, which DELTA also contains an implementation of.
 Suppose we have loaded some image from the hard disk (possibly using ImageIO) as a BufferedImage, then we can create a DELTA Image:
 
     Image img = new Image(bufferedImage);
@@ -32,7 +32,7 @@ Converting back to a BufferedImage is also trivial:
 
     BufferedImage bufferedImage2 = img.getBufferedImage();
 
-But why would we ever do this? You see, the advantage of using a DELTA Image becomes clear when we want to manipulate our images some way...
+The advantage of using a DELTA Image becomes clear when we want to manipulate our images. To perform an operation on every pixel in a BufferedImage a user would need to iterate through every (x,y) coordinate and and update the pixel (unless you use a BufferedImageOp, but we do not discuss those here). The problem gets worse if we want to apply different operations to different images - we would need to rewrite the loops to implement new functionality.
 
 ### Blending images
 
@@ -45,7 +45,7 @@ In this case, img1 is the 'target' and img2 is the 'blend' [as described by Role
 
 You can also change the alpha channel of an Image object, which changes how dominant the colors from a given image are. This is also exactly analogous with Photoshop or other editing software.
 
-### Filters
+### Image filters
 Suppose we want to apply a filter to
 an image that shifts the hue of each pixel by some amount. Using a regular BufferedImage we first have to construct a loop that enumerates
 all pixels in the image, then convert the pixels to the HSV (or HSL) color space, add some value to the hue and convert it back to RGB before
@@ -79,10 +79,6 @@ This is a very powerful feature. DELTA includes several filters already programm
 
 ![Adding motion blur](https://dl.dropboxusercontent.com/u/19633784/birds/motionblur.png)
 
-    Image edgeDetectImage = img.applyFilter( new SimpleEdgeDetectionFilter() );
-
-![Edge detection](https://dl.dropboxusercontent.com/u/19633784/birds/edges.png)
-
 We are not limited to the already-implemented filters - it is also possibly to anonymously implement the ImageFilter-interface as shown; suppose we want to shift the hue of some Image:
 
     Image img = . . .;
@@ -104,7 +100,7 @@ Or, we could combine several of these filters:
 
 All credit for the implementations of these filters goes to Lode Vandevenne (http://lodev.org/cgtutor/filtering.html).
 
-### Animations
+## Animations
 
 DELTA also has built-in support for producing animations from a list of images. Say we want to animate our bird image from earlier. We can then construct a new Animation object:
 
@@ -129,3 +125,36 @@ which describes what to do with some Image at some point in time 't'. Just like 
         ));
 
 ![Woah!](https://dl.dropboxusercontent.com/u/19633784/birds/trippy%20fugl.gif)
+
+### Exporting Animations
+
+Being able to construct an Animation-object is no fun if we can't export its contents to the operating system. Fortunately, DELTA makes this very easy. Once you're satisfied with the contents of an animation object, you can invoke .export(File f); to save it in the GIF format:
+
+    colorfulBirds.export(new File("colorfulBirds.gif"));
+
+The method may throw an IOException if something goes wrong saving the file to the disk.
+
+A drawback with GIF-animations is the data-loss as seen when comparing the quality of the animation to the still images. Fortunately, this can also be mitigated, BUT then you have to assemble the images yourself. If you instead invoke .export(String s); the Animation object will produce a separate image file for every Image object it contains, which can then later be assembled using time lapse software (such as ffmpeg). The Animation ensures padding the output files, so the lengths of their path names are identical (it prefixes the frame number with 0's).
+
+[Link to .WEBM](https://dl.dropboxusercontent.com/u/19633784/birds/OUTPUT.webm)
+
+### Importing Animations
+
+DELTA also support constructing Animation objects from existing animations. The constructor
+
+    public Animator(File f)
+
+Will attempt to load a GIF file located at 'f' and read its frames into memory as an array Image objects. Invoking .processAnimation() works just the same as constructing an Animator from a single Image - the method simply "wraps around" back to frame 0 should it run out of new frames. In this sense, an Animator constructed from a single Image is a special case of loading an array of Images (where it wraps around *every* time).
+
+Similarily, it's also possible to construct an Animator from a list of images:
+
+    public Animator(List<Image> imageList)
+
+### Combining Animations
+
+Suppose you have two different Animations and want to append one of them to other. Using DELTA this is also remarkably easy:
+
+    Animation a1 = . . ., a2 = . . .;
+    Animation combined = a1.append(a2);
+
+Which will append the frames of 'a2' *after* the frames in 'a1' and return the result as a new Animation.
