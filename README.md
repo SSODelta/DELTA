@@ -81,7 +81,8 @@ DELTA includes several filters already programmed, so the following are all lega
 
 Or, we could combine several of these:
 
-    Image comboImage = img.applyFilter(new MotionBlurFilter(Math.PI/4,9)).applyFilter(new MedianFilter(11)).xor(img).invertLightness();
+    Image comboImage 
+    = img.applyFilter(new MotionBlurFilter(Math.PI/4,9)).applyFilter(new MedianFilter(11)).xor(img).invertLightness();
 
 ![A combination image](https://dl.dropboxusercontent.com/u/19633784/birds/combo.png)
 All credit for the implementations of these filters goes to Lode Vandevenne (http://lodev.org/cgtutor/filtering.html).
