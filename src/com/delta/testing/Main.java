@@ -5,10 +5,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.delta.colors.common.BlendMode;
-import com.delta.colors.filters.MedianFilter;
-import com.delta.colors.filters.MotionBlurFilter;
-import com.delta.colors.util.Image;
+import com.delta.colours.common.BlendMode;
+import com.delta.colours.common.Colour;
+import com.delta.colours.common.HSV;
+import com.delta.colours.filters.MedianFilter;
+import com.delta.colours.filters.MotionBlurFilter;
+import com.delta.colours.util.Image;
 
 public class Main {
 
@@ -17,9 +19,9 @@ public class Main {
 	    try {
 	    	
 			Image img = new Image(ImageIO.read(new File("bird.jpg"))),
-				  f   = img.blend(img.applyFilter(new MotionBlurFilter(Math.PI/4,9)).applyFilter(new MedianFilter(11)).xor(img), BlendMode.SCREEN);
+				  f   = img.applyFilter( (x,y,raster) -> raster[x][y].toHSV().add((x+y)/20.0, 0, 0));
 			
-			ImageIO.write(f.getBufferedImage(), "png", new File("lets try2.png"));
+			ImageIO.write(f.getBufferedImage(), "png", new File("hue change.png"));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
