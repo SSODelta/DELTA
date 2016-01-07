@@ -2,9 +2,9 @@
 
 ## Colors
 DELTA adds extensive support for colors, making it trivial to convert between various color spaces. 
-Any color in DELTA is a subclass of com.delta.colors.Color, which itself is an abstract class. We can define a bright red color as:
+Any color in DELTA is an instance of a *color space*. All color spaces are subclass of com.delta.colors.Colour, which itself is an abstract class aggregating a vector representing the values of the color channels in the color space extending Colour. So RGB is a subclass of Colour, which implements the Red-Green-Blue color space. RGB is not abstract so we can invoke its constructor to create a new Colour object.
 
-    Color red = new RGB(255, 0, 0);
+    Colour red = new RGB(255, 0, 0);
 
 And then convert this to various color spaces:
 
@@ -13,17 +13,17 @@ And then convert this to various color spaces:
     red.toLMS().toString();  //LMS:  [17.8824, 3.4557, 0.02996]
     red.toYIQ().toString();  //YIQ:  [0.299, 0.596, 0.211]
 
-To preserve compatibility with existing Java-methods, the DELTA Color-library makes it easy to convert to java.awt.Color.
+To preserve compatibility with existing Java-methods, the DELTA Colour-library makes it easy to convert to java.awt.Color.
 So we can for instance do:
 
     java.awt.Color awtRed = red.toAWTColor();
 
-And it's also trivial to construct a DELTA Color from a java.awt.Color.
+And it's also trivial to construct a DELTA Colour from a java.awt.Color.
 
-    Color red2 = Color.fromAWTColor(awtRed);
+    Colour red2 = Color.fromAWTColor(awtRed);
 
 ## Images
-The natural extension of a Color class is an Image-class, so of course this library contains an Image-class. 
+The natural extension of a Color class is an Image-class, which DELTA also contains an implementation of.
 Suppose we have loaded some image from the hard disk (possibly using ImageIO) as a BufferedImage, then we can create a DELTA Image:
 
     Image img = new Image(bufferedImage);
@@ -32,7 +32,7 @@ Converting back to a BufferedImage is also trivial:
 
     BufferedImage bufferedImage2 = img.getBufferedImage();
 
-But why would we ever do this? You see, the advantage of using a DELTA Image becomes clear when we want to manipulate our images some way...
+The advantage of using a DELTA Image becomes clear when we want to manipulate our images. To perform an operation on every pixel in a BufferedImage a user would need to iterate through every (x,y) coordinate and and update the pixel (unless you use a BufferedImageOp, but we do not discuss those here). The problem gets worse if we want to apply different operations to different images - we would need to rewrite the loops to implement new functionality.
 
 ### Blending images
 
