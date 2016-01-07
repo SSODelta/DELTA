@@ -90,7 +90,8 @@ Or, we could combine several of these:
     Image comboImage = 
     img.blend(
         img.applyFilter( new MotionBlurFilter(Math.PI/4,9))
-           .applyFilter( new MedianFilter(11)), BlendMode.SCREEN);
+           .applyFilter( new MedianFilter(11))
+        , BlendMode.SCREEN);
 
 ![A combination image](https://dl.dropboxusercontent.com/u/19633784/birds/combo.png)
 
