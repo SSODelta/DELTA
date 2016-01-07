@@ -2,7 +2,6 @@ package com.delta.colors.filters;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.delta.colors.common.Color;

@@ -1,7 +1,9 @@
 package com.delta.colors.util;
 
 import java.awt.image.BufferedImage;
+import java.util.function.Function;
 
+import com.delta.colors.common.BlendMode;
 import com.delta.colors.common.Color;
 import com.delta.colors.common.RGB;
 import com.delta.colors.filters.ImageFilter;
@@ -13,7 +15,7 @@ import com.delta.colors.filters.ImageFilter;
  */
 public final class Image {
 
-	protected final Color[][] data;
+	private final Color[][] data;
 	private int w, h;
 	
 	/**
@@ -50,6 +52,34 @@ public final class Image {
 				
 	}
 	
+	public Image processImage(Function<Color, Color> map){
+		Color[][] newData = new Color[w][h];
+		
+		for(int x=0; x<w; x++)
+		for(int y=0; y<h; y++)
+			newData[x][y] = map.apply(data[x][y]);
+		
+		return new Image(newData);
+	}
+
+	public Image processImage(Image img, Function2 map){
+		Color[][] newData = new Color[w][h];
+		
+		for(int x=0; x<w; x++)
+		for(int y=0; y<h; y++)
+			newData[x][y] = map.apply(data[x][y], img.data[x][y]);
+		
+		return new Image(newData);
+	}
+	
+	public Image blend(Image img, BlendMode mode){
+		return processImage(img, (c1,c2) -> c1.blend(c2, mode));
+	}
+	
+	public Image blend(Image img){
+		return processImage(img, (c1,c2) -> c1.blend(c2));
+	}
+	
 	/**
 	 * Applies a filter to this image.
 	 * @param filter The ImageFilter to apply.
@@ -59,8 +89,8 @@ public final class Image {
 		Color[][] newData = new Color[w][h];
 
 		for(int y=0; y<h; y++)
-			for(int x=0; x<w; x++)
-				newData[x][y] = filter.filter(x, y, data);
+		for(int x=0; x<w; x++)
+			newData[x][y] = filter.filter(x, y, data);
 				
 		return new Image(newData);
 	}
@@ -73,8 +103,8 @@ public final class Image {
 		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		
 		for(int y=0; y<h; y++)
-			for(int x=0; x<w; x++)
-				img.setRGB(x, y, data[x][y].toInteger());
+		for(int x=0; x<w; x++)
+			img.setRGB(x, y, data[x][y].toInteger());
 		
 		return img;
 	}

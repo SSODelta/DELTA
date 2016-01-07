@@ -18,6 +18,8 @@ import com.delta.colors.obscure.*;
  */
 public abstract class Color implements Serializable {
 	
+	public static BlendMode BLEND_MODE;
+	
 	/**
 	 * Utility class for Color objects.
 	 * @author ssodelta
@@ -98,6 +100,48 @@ public abstract class Color implements Serializable {
 		}
 	}
 	
+	/**
+	 * Blends another Color with this Color object. It is assumed that 'this' is the target, and that 'o' is the blend.
+	 * Uses the global static BlendMode BLEND_MODE. To use a custom BlendMode, use .blend(Color o, BlendMode mode) instead;
+	 * Follows the implementation at:
+	 * 
+	 * http://www.deepskycolors.com/archivo/2010/04/21/formulas-for-Photoshop-blending-modes.html
+	 * 
+	 * @param o The blend
+	 * @return The blended color, has same class as 'this'.
+	 */
+	public Color blend(Color o){
+		return blend(o, BLEND_MODE);
+	}
+	
+	/**
+	 * Blends another Color with this Color object. It is assumed that 'this' is the target, and that 'o' is the blend.
+	 * Follows the implementation at:
+	 * 
+	 * http://www.deepskycolors.com/archivo/2010/04/21/formulas-for-Photoshop-blending-modes.html
+	 * 
+	 * @param o The blend
+	 * @return The blended color, has same class as 'this'.
+	 */
+	public Color blend(Color o, BlendMode mode){
+		return blendColors(mode, this, o);
+	}
+	
+	private static Color blendColors(BlendMode mode, Color target, Color blend){
+		
+		Color a = target,
+			  b = blend.convert(a.getClass());	//Make sure the colors are the same class
+		
+		int n = a.getDimensions();
+		
+		double[] c = new double[n];
+		
+		for(int i=0; i<n; i++)
+			c[i] = mode.combine(a.data[i], b.data[i]);
+		
+		return Color.fromClass(target.getClass(), c);
+	}
+	
 	private static final long serialVersionUID = -4625956113710955788L;
 	
 	private final double[] data;
@@ -137,6 +181,21 @@ public abstract class Color implements Serializable {
 		for(int i=0; i<r.length; i++)
 			r[i] = data[i];
 		return r;
+	}
+	
+	public RGB xor(Color c){
+		int[] r1 = this.toRGB().getRGB(),
+			  r2 = c.toRGB().getRGB();
+		
+		return new RGB( r1[0] ^ r2[0],
+						r1[1] ^ r2[1],
+						r1[2] ^ r2[2]);
+	}
+	
+	public HSL invertLightness(){
+		HSL hsl = this.toHSL();
+		
+		return new HSL(hsl.get('h'), hsl.get('s'), 1.0-hsl.get('l'));
 	}
 	
 	/**
