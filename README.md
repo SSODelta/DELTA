@@ -15,4 +15,4 @@ Unfortunately, after trying to render some more demanding filters and longer ani
 
 At the same time, I have also changed how the Colour-class itself works. Before, there was an abstract superclass, Colour, and then each colour space extended this superclass and ensured conversion to other colour spaces. Now, however, the class Colour is not abstract and a ColourSpace interface has been created, which contains two methods; fromRGB() and toRGB(). I have also renamed the Image class to DImage to ensure compatability with the Java standard library. Minor differences, I know, but it makes the code cleaner.
 
-I still need to 
+Almost all functionality has been re-implemented, but some still lacks. This README.md will be progressively updated to reflect the changes.
