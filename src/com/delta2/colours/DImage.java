@@ -23,6 +23,13 @@ public final class DImage {
 			data[x][y] = new Colour(img.data[x][y]);
 	}
 	
+	public DImage(Colour[][] raster){
+		this.data = raster;
+		
+		this.width  = raster.length;
+		this.height = raster[0].length;
+	}
+	
 	public DImage(int width, int height){
 		
 		this.width  = width;
@@ -30,16 +37,13 @@ public final class DImage {
 		
 		data = new Colour[width][height];
 
-		for(int x=0; x<width;  x++)
-		for(int y=0; y<height; y++)
-			data[x][y] = new Colour(Colour.WHITE);
 	}
 	
 	public DImage(BufferedImage img){
-		data = new Colour[img.getWidth()][img.getHeight()];
-		
 		width  = img.getWidth();
 		height = img.getHeight();
+		
+		data = new Colour[width][height];
 		
 		for(int x=0; x<width;  x++)
 		for(int y=0; y<height; y++)

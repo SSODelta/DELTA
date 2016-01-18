@@ -52,7 +52,9 @@ public final class Animation {
 	}
 	
 	
-	
+	public void addImage(DImage img){
+		images.add(img);
+	}
 	
 	public void export(File output) throws IOException{
 		if(images==null || images.size()==0)

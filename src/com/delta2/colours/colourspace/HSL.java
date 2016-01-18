@@ -36,8 +36,8 @@ final class HSL implements ColourSpace {
 		double  r = 0.0,
 				g = 0.0,
 				b = 0.0;
-		
-		double  c = data[2] * data[1],
+
+		double  c = ColourUtil.bound(data[2],0,1) * ColourUtil.bound(data[1],0,1),
 			   hh = (data[0] % 1) * 6.0,
 			    x = c * (1 - Math.abs((hh % 2) - 1));
 		
@@ -61,7 +61,7 @@ final class HSL implements ColourSpace {
 			b = x;
 		}
 		
-		double m = data[2] - c;
+		double m = ColourUtil.bound(data[2],0,1) - c;
 		
 		return new double[]{r + m, g + m, b + m};
 	}
