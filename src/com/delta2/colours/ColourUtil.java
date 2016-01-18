@@ -116,7 +116,7 @@ public final class ColourUtil {
 		return Math.toDegrees(Math.acos(deg));
 	}
 	
-	public static List<Colour> getMaximumContrastList(){
+	public static List<Colour> getRandomizedMaximumContrastList(){
 		List<Colour> cols = new ArrayList<Colour>();
 		
 		for(Colour c : KELLY_LIST_MAXIMUM_CONTRAST)

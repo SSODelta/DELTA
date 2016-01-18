@@ -43,6 +43,31 @@ public class Polynomial {
 		return k;
 	}
 	
+	public Polynomial add(double... vals){
+		if(terms == null)return null;
+		double[] newTerms = new double[terms.length];
+		
+		for(int i=0; i<newTerms.length; i++){
+			if(i<vals.length)
+				newTerms[i] = terms[i]+vals[i];
+			else
+				newTerms[i] = terms[i];
+		}
+		
+		return new Polynomial(newTerms);
+	}
+	
+	public Polynomial scale(double factor){
+		if(terms == null)return null;
+		double[] newTerms = new double[terms.length];
+		
+		for(int i=0; i<newTerms.length; i++){
+			newTerms[i] = terms[i]*factor;
+		}
+		
+		return new Polynomial(newTerms);
+	}
+	
 	/**
 	 * Rounds off a double-object to two significant digits and returns it as a String-object.
 	 * @param k The double to convert.

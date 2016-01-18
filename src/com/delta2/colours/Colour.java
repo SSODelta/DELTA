@@ -3,6 +3,7 @@ package com.delta2.colours;
 import java.awt.Color;
 
 import com.delta2.colours.colourspace.ColourSpace;
+import com.delta2.math.Complex;
 import com.delta2.colours.ColourUtil;
 
 public final class Colour {
@@ -48,6 +49,10 @@ public final class Colour {
 						 ColourUtil.to8bits(data[2]));
 	}
 	
+	public static final Colour fromComplex(Complex c){
+		//System.out.println("\nConvert from complex c="+c.toString());
+		return fromColourSpace(ColourSpace.HSV, new double[]{0.5+c.arg()/(2*Math.PI),1,1});
+	}
 	
 	public static final Colour fromColourSpace(ColourSpace cs, double[] data){
 		Colour c = new Colour(new double[]{0,0,0}, ColourSpace.RGB);
@@ -58,6 +63,8 @@ public final class Colour {
 		
 		for(int i=0; i<data.length; i++)
 			c.set(i, data[i]);
+		
+		//System.out.println("\tgot color col="+c.toString());
 		
 		return c;
 	}

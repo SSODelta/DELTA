@@ -15,26 +15,18 @@ public final class NewtonFractal extends Generator {
 
 	private Polynomial p, deriv;
 	
-	private List<Complex> roots;
-	
 	private int r;
 	
-	private List<Colour> colList;
 	
 	public NewtonFractal(Polynomial p, int radius){
 		super();
 		this.p = p;
 		this.r = radius;
 		this.deriv = p.derivative();
-		roots = new ArrayList<Complex>();
-		
-		colList = ColourUtil.getMaximumContrastList();
 	}
 
 	@Override
 	protected Colour generate(double x, double y, double t) {
-		
-		int root = -1;
 		
 		Complex guess = new Complex(-r+x*2*r, -r+y*2*r);
 		double err = 1;
@@ -43,31 +35,22 @@ public final class NewtonFractal extends Generator {
 		
 		while(err > ColourUtil.ALMOST_ZERO){
 			
-			Complex newGuess = guess.subtract(p.getValue(guess).divide(deriv.getValue(guess)));
+			Polynomial q = p.add(0,0,0,Math.cos(t*2*Math.PI)*3);
+			
+			Complex newGuess = guess.subtract(q.getValue(guess).divide(q.derivative().getValue(guess)));
 			err = newGuess.difference(guess);
 			
 			guess = newGuess;
 			tries++;
 		}
 		
-		boolean newRoot = true;
 		
-		for(int i=0; i<roots.size(); i++){
-			if(guess.equals(roots.get(i))){
-				root = i;
-				newRoot = false;
-				break;
-			}
-		}
-		
-		if(newRoot){
-			root = roots.size();
-			roots.add(guess);
-		}
-		
-		Colour r = new Colour(colList.get(root));
+		Colour r = Colour.fromComplex(guess);
 		
 		double ds = -Math.log(tries/5.0)/3;
+		
+		if(ds<=-1)System.out.println("ds="+ds);
+		
 		return r.convert(ColourSpace.HSV).add(0,ds,ds);
 		
 	}
