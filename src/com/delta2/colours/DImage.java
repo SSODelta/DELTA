@@ -23,6 +23,18 @@ public final class DImage {
 			data[x][y] = new Colour(img.data[x][y]);
 	}
 	
+	public DImage(int width, int height){
+		
+		this.width  = width;
+		this.height = height;
+		
+		data = new Colour[width][height];
+
+		for(int x=0; x<width;  x++)
+		for(int y=0; y<height; y++)
+			data[x][y] = new Colour(Colour.WHITE);
+	}
+	
 	public DImage(BufferedImage img){
 		data = new Colour[img.getWidth()][img.getHeight()];
 		
@@ -33,6 +45,10 @@ public final class DImage {
 		for(int y=0; y<height; y++)
 			data[x][y] = new Colour(img.getRGB(x, y));
 		
+	}
+	
+	public double getAlpha(){
+		return alpha;
 	}
 	
 	//---Mutators
@@ -54,10 +70,22 @@ public final class DImage {
 		if(this.width!=other.width || this.height!=other.height)
 			throw new IllegalArgumentException("cannot blend two images of different dimensions.");
 
-		for(int x=0; x<width;  x++)
-		for(int y=0; y<height; y++)
-			this.data[x][y].blend(other.data[x][y], mode);
+		double a1 = this.getAlpha(), a2 = other.getAlpha();
+		double newAlpha = a1 + a2 - a1*a2;
 		
+		for(int x=0; x<width;  x++)
+		for(int y=0; y<height; y++){
+			Colour col = this.data[x][y],
+				   bl  = other.data[x][y];
+			
+			col.scale(a1);
+			bl.scale(a2);
+			
+			col.blend(bl, mode);
+			
+			col.scale(1.0 / newAlpha);
+			
+		}
 		return this;
 	}
 	

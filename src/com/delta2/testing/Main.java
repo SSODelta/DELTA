@@ -14,7 +14,7 @@ public class Main {
 			
 			img2.applyFilter(new MedianFilter(9));
 			
-			img1.blend(img2, BlendMode.SOFT_LIGHT);
+			img1.blend(img2, BlendMode.HARD_LIGHT);
 			
 			DImageIO.write(img1, "flowers_out.jpg");
 			

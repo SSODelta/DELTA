@@ -149,5 +149,12 @@ public final class Colour {
 		return colourSpace;
 	}
 	
+	//-----STATIC FINAL
+	
+	public static final Colour WHITE = new Colour(255,255,255);
+	public static final Colour RED   = new Colour(255,0,0);
+	public static final Colour GREEN = new Colour(0,255,0);
+	public static final Colour BLUE  = new Colour(0,0,255);
+	
 	
 }
