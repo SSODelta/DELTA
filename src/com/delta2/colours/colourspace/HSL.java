@@ -1,6 +1,6 @@
 package com.delta2.colours.colourspace;
 
-import com.delta2.colours.util.ColourUtil;
+import com.delta2.colours.ColourUtil;
 
 final class HSL implements ColourSpace {
 

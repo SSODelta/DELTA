@@ -1,14 +1,14 @@
 package com.delta2.colours.filters.image;
 
+import com.delta2.colours.Colour;
 import com.delta2.colours.colourspace.ColourSpace;
-import com.delta2.colours.common.Colour;
 
 public class HueShiftFilter implements DImageFilter {
 
 	private double dhue;
 	
 	public HueShiftFilter(double hueChange){
-		this.dhue = hueChange;
+		this.dhue = hueChange/360;
 	}
 	
 	

@@ -1,6 +1,6 @@
 package com.delta2.colours.filters.image;
 
-import com.delta2.colours.common.Colour;
+import com.delta2.colours.Colour;
 
 /**
  * This class represents an ImageFilter.

@@ -52,3 +52,4 @@ Temporary Items
 
 # Java class files (not needed)
 *.class
+/bin/

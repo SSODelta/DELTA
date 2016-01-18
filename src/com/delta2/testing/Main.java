@@ -1,23 +1,22 @@
 package com.delta2.testing;
 
-import java.io.File;
 import java.io.IOException;
-
-import com.delta2.colours.colourspace.ColourSpace;
-import com.delta2.colours.common.Animation;
-import com.delta2.colours.util.DImageIO;
+import com.delta2.colours.*;
+import com.delta2.colours.filters.image.MedianFilter;
 
 public class Main {
 
 	public static void main(String[] args) {
 		try {
 			
-			Animation a = new Animation(DImageIO.read("bird.jpg"));
-			a.ensureLength(60);
+			DImage img1 = DImageIO.read("flowers.jpg"),
+				   img2 = new DImage(img1);
 			
-			a.applyFilter((imgs,t) -> imgs[t].applyFilter((x,y,raster) -> raster[x][y].convert(ColourSpace.HSV).add(t/8.0+(x+y)/110.0,0,0)));
+			img2.applyFilter(new MedianFilter(9));
 			
-			a.export(new File("birds.gif"));
+			img1.blend(img2, BlendMode.SOFT_LIGHT);
+			
+			DImageIO.write(img1, "flowers_out.jpg");
 			
 		} catch (IOException e) {
 			e.printStackTrace();

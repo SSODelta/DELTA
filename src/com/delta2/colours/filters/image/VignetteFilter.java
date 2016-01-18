@@ -1,7 +1,7 @@
 package com.delta2.colours.filters.image;
 
+import com.delta2.colours.Colour;
 import com.delta2.colours.colourspace.ColourSpace;
-import com.delta2.colours.common.Colour;
 
 public abstract class VignetteFilter implements DImageFilter {
 

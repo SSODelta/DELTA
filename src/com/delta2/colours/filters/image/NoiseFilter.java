@@ -1,7 +1,7 @@
 package com.delta2.colours.filters.image;
 
-import com.delta2.colours.common.Colour;
-import com.delta2.colours.util.ColourUtil;
+import com.delta2.colours.Colour;
+import com.delta2.colours.ColourUtil;
 
 public class NoiseFilter implements DImageFilter {
 

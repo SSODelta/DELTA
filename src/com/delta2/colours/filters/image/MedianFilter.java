@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.delta2.colours.common.Colour;
+import com.delta2.colours.Colour;
 
 
 public class MedianFilter implements DImageFilter {
