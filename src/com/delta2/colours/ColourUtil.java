@@ -1,5 +1,10 @@
 package com.delta2.colours;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +37,50 @@ public final class ColourUtil {
 		return hh / 6;
 	}
 	
+	public static String randomLabel(){
+		return pad((int)Math.floor(Math.random()*Integer.MAX_VALUE),
+				        Integer.toString( Integer.MAX_VALUE).length());
+	}
+	
+	public static String pad(int n, int len){
+		String s = Integer.toString(n, 10);
+		
+		while(s.length()<len)
+			s = '0' + s;
+		
+		return s;
+	}
+	
+
+	public static DImage writeToImage(DImage img, String text){
+		BufferedImage bImg = img.toBufferedImage();
+		
+		BufferedImage tagged = writeToImage(bImg, text);
+		
+		return new DImage(tagged);
+	}
+	
+	/**
+	 * Writes text to a BufferedImage-object in the lower right corner.
+	 * Used to write the name of the regex unto the image object.
+	 * @param image The image to write on.
+	 * @param textToWrite The text to write
+	 * @return A new BufferedImage, which has text written unto it.
+	 */
+	private static BufferedImage writeToImage(BufferedImage image, String text){
+		Graphics2D g = image.createGraphics();
+		g.setFont(new Font("Sans-Serif", Font.BOLD, 17));
+		FontMetrics fm = g.getFontMetrics(); 
+		int w = fm.stringWidth(text) + 10;
+		int h = fm.getHeight() + 3;
+		g.setColor(Color.WHITE);
+		g.fillRect(0, image.getHeight()-h, w, h);
+		g.setColor(Color.BLACK);
+		g.drawString(text, 5, image.getHeight() - 6);
+		g.dispose();
+		return image;
+	}
+	
 	public static int to8bits(double d){
 		if(d<0)d=0;
 		if(d>1)d=0;
@@ -39,10 +88,14 @@ public final class ColourUtil {
 		return (int)Math.floor(d*255);
 	}
 	
-	public static final double ALMOST_ZERO = 0.00001;
+	public static final double ALMOST_ZERO = 0.000000001;
 	
 	public static final double rand(){
 		return Math.random()*2-1;
+	}
+	
+	public static final int rand(int a, int b){
+		return a + (int)(Math.random()*(b-a));
 	}
 	
 	/**
@@ -105,6 +158,14 @@ public final class ColourUtil {
 	 */
 	public static final double cos(double deg){
 		return Math.cos(Math.toRadians(deg));
+	}
+	
+	public static final double mod(double x, double m){
+		double xx = x;
+		while(xx<0)
+			xx+=m;
+		
+		return xx%m;
 	}
 	
 	/**

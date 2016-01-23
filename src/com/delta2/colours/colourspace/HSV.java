@@ -37,7 +37,7 @@ final class HSV implements ColourSpace {
 				b = 0.0;
 		
 		double  c = ColourUtil.bound(data[2],0,1) * ColourUtil.bound(data[1],0,1),
-			   hh = (data[0] % 1) * 6.0,
+			   hh = ColourUtil.mod(data[0], 1) * 6.0,
 			    x = c * (1 - Math.abs((hh % 2) - 1));
 		
 		if(0 <= hh && hh < 1){

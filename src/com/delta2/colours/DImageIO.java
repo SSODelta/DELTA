@@ -22,6 +22,7 @@ public final class DImageIO {
 	public static final void write(DImage img, String path) throws IOException{
 		if(!path.contains("."))
 			throw new IllegalArgumentException("output path must have a file extension");
+
 		ImageIO.write(img.toBufferedImage(), path.substring(path.lastIndexOf(".")+1).toLowerCase(), new File(path));
 	}
 	

@@ -21,7 +21,7 @@ public final class Animation {
 	
 	public Animation(){
 		images = new ArrayList<DImage>();
-		delay = 100;
+		delay = 100/6;
 	}
 	
 	public Animation(DImage img){
@@ -63,9 +63,7 @@ public final class Animation {
 		ImageOutputStream outStream = new FileImageOutputStream(output);
 		GIFSequenceWriter gifWriter = new GIFSequenceWriter(outStream, BufferedImage.TYPE_INT_RGB, delay, true);
 
-		System.out.println("EXPORTING");
 		for(int i=0; i<images.size(); i++){
-			System.out.println("Processing "+(i+1)+"/"+images.size());
 			DImage img = images.get(i);
 			gifWriter.writeToSequence(img.toBufferedImage());
 		}

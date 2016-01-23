@@ -1,13 +1,16 @@
 package com.delta2.colours;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 
 import com.delta2.colours.filters.image.DImageFilter;
 
 public final class DImage {
 
 	private final Colour[][] data;
-	private final int width, height;
+	final int width;
+	final int height;
 	
 	private double alpha = 1.0;
 	
@@ -20,7 +23,7 @@ public final class DImage {
 		
 		for(int x=0; x<width;  x++)
 		for(int y=0; y<height; y++)
-			data[x][y] = new Colour(img.data[x][y]);
+			getData()[x][y] = new Colour(img.getData()[x][y]);
 	}
 	
 	public DImage(Colour[][] raster){
@@ -47,7 +50,7 @@ public final class DImage {
 		
 		for(int x=0; x<width;  x++)
 		for(int y=0; y<height; y++)
-			data[x][y] = new Colour(img.getRGB(x, y));
+			getData()[x][y] = new Colour(img.getRGB(x, y));
 		
 	}
 	
@@ -65,7 +68,7 @@ public final class DImage {
 		
 		for(int x=0; x<width;  x++)
 		for(int y=0; y<height; y++)
-			data[x][y] = filter.filter(x, y, data);
+			getData()[x][y] = filter.filter(x, y, getData());
 		
 		return this;
 	}
@@ -79,8 +82,8 @@ public final class DImage {
 		
 		for(int x=0; x<width;  x++)
 		for(int y=0; y<height; y++){
-			Colour col = this.data[x][y],
-				   bl  = other.data[x][y];
+			Colour col = this.getData()[x][y],
+				   bl  = other.getData()[x][y];
 			
 			col.scale(a1);
 			bl.scale(a2);
@@ -100,10 +103,14 @@ public final class DImage {
 		
 		for(int x=0; x<width;  x++)
 		for(int y=0; y<height; y++)
-			img.setRGB(x, y, data[x][y].to24bits());
+			img.setRGB(x, y, getData()[x][y].to24bits());
 		
 		return img;
 	}
-	
+
+	public Colour[][] getData() {
+		return data;
+	}
+
 	
 }

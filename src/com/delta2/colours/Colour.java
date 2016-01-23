@@ -44,14 +44,19 @@ public final class Colour {
 	
 	public Color toColor(){
 		convert(ColourSpace.RGB);
-		return new Color(ColourUtil.to8bits(data[0]),
-						 ColourUtil.to8bits(data[1]),
-						 ColourUtil.to8bits(data[2]));
+		Color c = new Color(ColourUtil.to8bits(ColourUtil.bound(data[0],0,1)),
+						 ColourUtil.to8bits(ColourUtil.bound(data[1],0,1)),
+						 ColourUtil.to8bits(ColourUtil.bound(data[2],0,1)));
+		
+		return c;
 	}
 	
 	public static final Colour fromComplex(Complex c){
-		//System.out.println("\nConvert from complex c="+c.toString());
-		return fromColourSpace(ColourSpace.HSV, new double[]{0.5+c.arg()/(2*Math.PI),1,1});
+		Colour col = fromColourSpace(ColourSpace.HSV, new double[]{ColourUtil.mod(c.arg(),2*Math.PI)/(2*Math.PI),1,1});
+			
+		col.convert(ColourSpace.RGB);
+		
+		return col;
 	}
 	
 	public static final Colour fromColourSpace(ColourSpace cs, double[] data){
@@ -63,8 +68,6 @@ public final class Colour {
 		
 		for(int i=0; i<data.length; i++)
 			c.set(i, data[i]);
-		
-		//System.out.println("\tgot color col="+c.toString());
 		
 		return c;
 	}
