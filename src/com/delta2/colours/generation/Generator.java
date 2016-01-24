@@ -18,8 +18,12 @@ public abstract class Generator {
 
 	private long begin;
 	
-	protected Generator(){
+	private int width, height;
+	
+	protected Generator(int width, int height){
 		begin = System.currentTimeMillis();
+		this.width= width;
+		this.height = height;
 	}
 	
 	private String time(){
@@ -28,7 +32,7 @@ public abstract class Generator {
 			 + "]: ";
 	}
 	
-	public Colour[][] generateRaster(int width, int height, double t){
+	public Colour[][] generateRaster(double t){
 		Colour[][] raster = new Colour[width][height];
 		
 		int max = Math.max(width, height);
@@ -41,33 +45,20 @@ public abstract class Generator {
 		return raster;
 	}
 	
-	public DImage generateImage(int width, int height){
-		return new DImage(generateRaster(width, height, 0));
+	public DImage generateImage(String tag, double t){
+		return ColourUtil.writeToImage(generateImage(t), tag);
 	}
 	
-	public DImage generateImage(int width, int height, double t){
-		return new DImage(generateRaster(width, height, t));
+	public DImage generateImage(double t){
+		return new DImage(generateRaster(t));
 	}
 	
-	public DImage generateImage(String tag, int width, int height, double t){
-		return ColourUtil.writeToImage(generateImage(width, height,t), tag);
+	public DImage generateImage(){
+		return generateImage(0);
 	}
+
 	
-	public DImage generateImage(String tag, int width, int height){
-		return ColourUtil.writeToImage(generateImage(width, height), tag);
-	}
-	
-	public BufferedImage generateBufferedImage(int width, int height, double t){
-		return generateImage(width, height, t).toBufferedImage();
-	}
-	public BufferedImage generateBufferedImage(String tag, int width, int height, double t){
-		return generateImage(tag, width, height, t).toBufferedImage();
-	}
-	public BufferedImage generateBufferedImage(String tag, int width, int height){
-		return generateImage(tag, width, height).toBufferedImage();
-	}
-	
-	public void exportAnimation(String filename, String tag, int width, int height, int images, int fps, boolean print) throws IOException{
+	public void exportAnimation(String filename, String tag, int images, int fps, boolean print) throws IOException{
 		if(images<1)
 			throw new RuntimeException("Empty animation");
 		
@@ -76,7 +67,7 @@ public abstract class Generator {
 
 		for(int i=0; i<images; i++){
 			if(print)tag(i,images,tag);
-			DImage img = generateImage(tag, width, height, (double)i/(double)(images-1));
+			DImage img = generateImage(tag, (double)i/(double)(images-1));
 			
 			if(i==0){
 				String newFilename = filename.substring(0,filename.lastIndexOf(".")) + "_sample" + filename.substring(filename.lastIndexOf("."));
@@ -93,35 +84,17 @@ public abstract class Generator {
 		gifWriter.close();
 	}
 
-	public Animation generateAnimation(String tag, int width, int height, int images, boolean print){
+	public Animation generateAnimation(String tag, int images, boolean print){
 		Animation a = new Animation();
 		
 		for(int t=0; t<images; t++){
 			if(print)tag(t,images,tag);
-			a.addImage(generateImage(tag, width, height, (double)t/(double)(images-1)));
-		}
-		
-		return a;
-	}
-	
-	public Animation generateAnimation(String tag, int width, int height, int images){
-		return generateAnimation(tag,width,height,images,false);
-	}
-	
-	public Animation generateAnimation(int width, int height, int images, boolean print){
-		Animation a = new Animation();
-		
-		for(int t=0; t<images; t++){
-			if(print)tag(t,images,"");
-			a.addImage(generateImage(width, height, (double)t/(double)(images-1)));
+			a.addImage(generateImage(tag, (double)t/(double)(images-1)));
 		}
 		
 		return a;
 	}
 
-	public Animation generateAnimation(int width, int height, int images){
-		return generateAnimation(width,height,images,false);
-	}
 	
 	private final void tag(int t, int imgs,String tag){
 		System.out.println(time()+"Image "+(t+1)+"/"+imgs + "\t"+tag);
@@ -135,6 +108,13 @@ public abstract class Generator {
 		}
 	}
 	
+	/**
+	 * Generates a color object for a given (x,y) pixel
+	 * @param x The x-coordinate (in the interval [0, 1]) of the point.
+	 * @param y The y-coordinate (in the interval [0, 1]) of the point.
+	 * @param t The time variable (also in the interval [0, 1]).
+	 * @return A Colour object to be painted at (x,y) in the final image.
+	 */
 	protected abstract Colour generate(double x, double y, double t);
 	
 }
