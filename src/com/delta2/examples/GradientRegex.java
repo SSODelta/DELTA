@@ -86,7 +86,7 @@ public final class GradientRegex extends Generator {
 		
 		int d = getDistance(regexPos);
 		
-		Colour c = Colour.fromColourSpace(ColourSpace.HSV, new double[]{t*d/20.0,1.0/Math.sqrt(Math.sqrt(Math.sqrt(d))),1.0/Math.sqrt(Math.sqrt(Math.sqrt(d)))});
+		Colour c = Colour.fromColourSpace(ColourSpace.HSV,  new double[]{t*d/20.0,1.0/Math.sqrt(Math.sqrt(Math.sqrt(d))),1.0/Math.sqrt(Math.sqrt(Math.sqrt(d)))});
 		
 		return c;
 	}
@@ -95,7 +95,8 @@ public final class GradientRegex extends Generator {
 		return getRegexPos((int)(x*SIZE),(int)(y*SIZE));
 	}
 	private String getRegexPos(int x, int y){
-		return getRegexPos(new Point(x,y));
+		String s = getRegexPos(new Point(x,y));
+		return s;
 	}
 	private String getRegexPos(Point p){
 		return regexFromPoint(p, SIZE, SIZE, len);

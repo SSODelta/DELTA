@@ -88,7 +88,7 @@ public final class ColourUtil {
 		return (int)Math.floor(d*255);
 	}
 	
-	public static final double ALMOST_ZERO = 0.000000001;
+	public static final double ALMOST_ZERO = 0.00001;
 	
 	public static final double rand(){
 		return Math.random()*2-1;

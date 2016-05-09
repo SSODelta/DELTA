@@ -21,7 +21,7 @@ public final class Animation {
 	
 	public Animation(){
 		images = new ArrayList<DImage>();
-		delay = 100/6;
+		delay = 100/4;
 	}
 	
 	public Animation(DImage img){
@@ -32,6 +32,11 @@ public final class Animation {
 	public Animation(Collection<? extends DImage> imgs){
 		this();
 		images.addAll(imgs);
+	}
+	
+	public void setAlpha(double alpha){
+		for(DImage img : images)
+			img.setAlpha(alpha);
 	}
 	
 	public void applyFilter(AnimationFilter filter){
@@ -49,6 +54,15 @@ public final class Animation {
 		while(images.size() < len)
 			images.add(new DImage(images.get(i++)));
 		
+	}
+	
+	public Animation blend(Animation a, BlendMode mode){
+		int max = Math.min(a.images.size(), this.images.size());
+		
+		for(int i=0; i<max; i++)
+			images.get(i).blend(a.images.get(i), mode);
+		
+		return this;
 	}
 	
 	

@@ -7,7 +7,7 @@ import com.delta2.colours.ColourUtil;
 import com.delta2.colours.colourspace.ColourSpace;
 import com.delta2.colours.generation.Generator;
 import com.delta2.math.Complex;
-import com.delta2.math.Polynomial;
+import com.delta2.math.func.Polynomial;
 
 /**
  * Newton Fractals are based on Newton's iteration method for approximating roots of differentiable functions.
@@ -43,7 +43,7 @@ public final class NewtonFractal extends Generator {
 
 	private Polynomial p;
 	
-	private int r;
+	private double r;
 	
 	private double[] magCoeffs, speedCoeffs, phaseCoeffs;
 	
@@ -55,7 +55,7 @@ public final class NewtonFractal extends Generator {
 	 * @param speedCoeffs Coefficients for the angular velocity of the harmonic oscillations on the coefficients (corresponding to b_n in the class specification)
 	 * @param phaseCoeffs Coefficients for the phase shift of the harmonic oscillations on the coefficients (corresponding to c_n in the class specification)
 	 */
-	public NewtonFractal(Polynomial p, int radius, double[] magCoeffs, double[] speedCoeffs, double[] phaseCoeffs){
+	public NewtonFractal(Polynomial p, double radius, double[] magCoeffs, double[] speedCoeffs, double[] phaseCoeffs){
 		super(WIDTH, HEIGHT);
 		this.p = p;
 		this.r = radius;
@@ -70,7 +70,7 @@ public final class NewtonFractal extends Generator {
 	 * @param radius Will generate points in the interval [-radius; radius] for both x and y. Low radius = zoomed in, high radius = zoomed out.
 	 * @param freedom Freedom specifies how many of the coefficients should be given a random oscillation. High freedom = chaotic animations.
 	 */
-	public NewtonFractal(Polynomial p, int radius, int freedom){
+	public NewtonFractal(Polynomial p, double radius, int freedom){
 		this(p,radius,randomMagCoeffs(freedom),randomPhaseCoeffs(freedom),randomSpeedCoeffs(freedom));
 	}
 	
@@ -104,7 +104,10 @@ public final class NewtonFractal extends Generator {
 	@Override
 	protected Colour generate(double x, double y, double t) {
 		
-		Complex guess = new Complex(-r+x*2*r, -r+y*2*r);
+		double rr = r*Math.pow(0.8, t*30);
+		double dx = 0;
+		
+		Complex guess = new Complex(-rr+x*2*rr+dx, -rr+y*2*rr);
 		double err = 1;
 		
 		int tries = 1;
@@ -114,15 +117,18 @@ public final class NewtonFractal extends Generator {
 		for(int i=0; i<vals.length; i++)
 			vals[i] = magCoeffs[i] * Math.cos(t*2*Math.PI*speedCoeffs[i] + phaseCoeffs[i]);
 		
-		Polynomial q = p.add(vals);
+		Polynomial q = new Polynomial(p).add(vals);
 		Polynomial qd = q.derivative();
+		
+		System.out.println("Initial guess: "+guess);
 		
 		while(err > ColourUtil.ALMOST_ZERO){
 			
-			Complex newGuess = guess.subtract(q.getValue(guess).divide(qd.getValue(guess)));
+			Complex newGuess = new Complex(guess).sub(q.evaluate(new Complex(guess)).div(qd.evaluate(new Complex(guess))));
 			err = newGuess.difference(guess);
 			
 			guess = newGuess;
+			System.out.println("\tnew guess: "+newGuess);
 			
 			if(++tries >= 250)
 				break;
@@ -134,14 +140,17 @@ public final class NewtonFractal extends Generator {
 		
 		double ds = -Math.log(tries/5.0)/3;
 		
-		Colour col = r.convert(ColourSpace.HSV).add(0,0,ds).convert(ColourSpace.RGB);
+		if(hueshift<0)hueshift=Math.random();
+		Colour col = r.convert(ColourSpace.HSV).add(hueshift+tries/(20.0+20*t)+t,ds,ds).convert(ColourSpace.RGB);
 		
 		return col;
 		
 	}
 	
-	private static final int WIDTH  = 1920,
-			 				 HEIGHT = 1080,
+	private static double hueshift = -1.0;
+	
+	private static final int WIDTH  = 640,
+			 				 HEIGHT = 240,
 			 				 FPS    = 30;
 	
 	/**

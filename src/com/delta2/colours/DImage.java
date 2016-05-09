@@ -1,8 +1,6 @@
 package com.delta2.colours;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.Iterator;
 
 import com.delta2.colours.filters.image.DImageFilter;
 

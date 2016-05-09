@@ -3,11 +3,13 @@ package com.delta2.colours.generation;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 
 import com.delta2.colours.Animation;
+import com.delta2.colours.BlendMode;
 import com.delta2.colours.Colour;
 import com.delta2.colours.ColourUtil;
 import com.delta2.colours.DImage;
@@ -19,6 +21,7 @@ public abstract class Generator {
 	private long begin;
 	
 	private int width, height;
+
 	
 	protected Generator(int width, int height){
 		begin = System.currentTimeMillis();
@@ -39,14 +42,15 @@ public abstract class Generator {
 		
 		for(int xx=0; xx<width;  xx++)
 		for(int yy=0; yy<height; yy++)
-			raster[xx][yy] = generate((double)xx/(double)(max-1), (double)yy/(double)(max-1), t);
+			raster[xx][yy] = generate((double)xx/(double)(max-1), (double)(yy)/(double)(max-1), t);
 
 		
 		return raster;
 	}
 	
 	public DImage generateImage(String tag, double t){
-		return ColourUtil.writeToImage(generateImage(t), tag);
+		DImage img = generateImage(t);
+		return tag.isEmpty() ? img : ColourUtil.writeToImage(img, tag);
 	}
 	
 	public DImage generateImage(double t){
@@ -64,10 +68,19 @@ public abstract class Generator {
 		
 		ImageOutputStream outStream = new FileImageOutputStream(new File(filename));
 		GIFSequenceWriter gifWriter = null;
+		DImage prev = null;
 
 		for(int i=0; i<images; i++){
 			if(print)tag(i,images,tag);
 			DImage img = generateImage(tag, (double)i/(double)(images-1));
+			
+			if(prev!=null){
+				prev.setAlpha(0.825);
+				img.blend(prev, BlendMode.SOFT_LIGHT);
+				img.setAlpha(1.0);
+			}
+			
+			prev = new DImage(img);
 			
 			if(i==0){
 				String newFilename = filename.substring(0,filename.lastIndexOf(".")) + "_sample" + filename.substring(filename.lastIndexOf("."));
@@ -96,6 +109,7 @@ public abstract class Generator {
 	}
 
 	
+	
 	private final void tag(int t, int imgs,String tag){
 		System.out.println(time()+"Image "+(t+1)+"/"+imgs + "\t"+tag);
 		
@@ -103,7 +117,17 @@ public abstract class Generator {
 			int dt        = (int)Math.floor((System.currentTimeMillis() - begin)/1000);
 			int remaining = (int)Math.floor(dt * ((double)(imgs-t) / (double)t));
 					
-			System.out.println("        Remaining time: ~"+remaining+" seconds.");
+			System.out.print("        Remaining time: ~"+remaining+" seconds");
+			
+			LocalDateTime ldt = LocalDateTime.now().plusSeconds(remaining);
+			
+			System.out.println("\t@"+ColourUtil.pad(ldt.getHour(),2)
+													  +":"+ColourUtil.pad(ldt.getMinute(),2)
+													  +":"+ColourUtil.pad(ldt.getSecond(),2)
+													  +" ("+ColourUtil.pad(ldt.getDayOfMonth(),2)
+													    +"/"+ColourUtil.pad(ldt.getMonthValue(),2)
+														+"/"+ColourUtil.pad(ldt.getYear(),4)
+														+")");
 			if(t!=imgs-1)System.out.print("\n");
 		}
 	}
